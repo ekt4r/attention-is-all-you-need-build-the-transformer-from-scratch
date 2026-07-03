@@ -119,13 +119,7 @@ import torch
 def build_padding_mask(token_ids, pad_id):
     """Return a (B, 1, 1, L) bool mask: True where token_ids != pad_id."""
     # TODO: build a boolean mask marking non-pad positions, shaped for broadcasting against attention scores
-    B, L = token_ids.shape
-    mask = torch.zeros((B, 1, 1, L), dtype=bool)
-    for i in range(B):
-        for j in range(L):
-            if token_ids[i, j] != pad_id:
-                mask[i, :, :, j] = 1
-    return mask
+    return (token_ids != pad_id)[:, None, None, :]
 
 # Step 15 - build_causal_mask (not yet solved)
 # TODO: implement

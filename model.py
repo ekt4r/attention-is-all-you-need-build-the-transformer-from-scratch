@@ -323,12 +323,34 @@ def encoder_layer_feed_forward_sublayer(x, w1, b1, w2, b2, gamma, beta):
 # Step 41 - assemble_encoder_layer
 def assemble_encoder_layer(x, layer_params, num_heads, src_mask):
     # TODO: chain the self-attention sublayer and the feed-forward sublayer using layer_params.
-    w_q, w_k, w_v, w_o, attn_gamma, attn_beta = layer_params['w_q'], layer_params['w_k'], layer_params['w_v'], \
-        layer_params['w_o'], layer_params['attn_gamma'], layer_params['attn_beta']
-    out = encoder_layer_self_attention_sublayer(x, w_q, w_k, w_v, w_o, attn_gamma, attn_beta, num_heads, src_mask)
-    w1, b1, w2, b2, ffn_gamma, ffn_beta = layer_params['w1'], layer_params['b1'], layer_params['w2'], \
-        layer_params['b2'], layer_params['ffn_gamma'], layer_params['ffn_beta']
-    return encoder_layer_feed_forward_sublayer(x, w1, b1, w2, b2, ffn_gamma, ffn_beta)
+    w_q, w_k, w_v, w_o, attn_gamma, attn_beta = (
+        layer_params['w_q'],
+        layer_params['w_k'],
+        layer_params['w_v'],
+        layer_params['w_o'],
+        layer_params['attn_gamma'],
+        layer_params['attn_beta'],
+    )
+
+    out = encoder_layer_self_attention_sublayer(
+        x, w_q, w_k, w_v, w_o,
+        attn_gamma, attn_beta,
+        num_heads, src_mask
+    )
+
+    w1, b1, w2, b2, ffn_gamma, ffn_beta = (
+        layer_params['w1'],
+        layer_params['b1'],
+        layer_params['w2'],
+        layer_params['b2'],
+        layer_params['ffn_gamma'],
+        layer_params['ffn_beta'],
+    )
+
+    return encoder_layer_feed_forward_sublayer(
+        out, w1, b1, w2, b2,
+        ffn_gamma, ffn_beta
+    )
 
 # Step 42 - stack_encoder_layers (not yet solved)
 # TODO: implement

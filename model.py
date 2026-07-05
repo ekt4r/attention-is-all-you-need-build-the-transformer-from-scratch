@@ -295,7 +295,7 @@ import torch
 def normalize_and_scale_with_gamma_beta(x, gamma, beta, eps=1e-5):
     # TODO: standardize x along the last axis then apply gamma and beta affine transform
     mean, var = compute_layer_norm_mean_and_variance(x)
-    return ((x - mean) / (torch.sqrt(var) + eps)) * gamma + beta
+    return ((x - mean) / (torch.sqrt(var + eps))) * gamma + beta
 
 # Step 37 - apply_residual_add_and_norm
 import torch
@@ -377,7 +377,6 @@ def decoder_layer_cross_attention_sublayer(y, encoder_output, w_q, w_k, w_v, w_o
     # TODO: run multi-head cross-attention (Q from y, K/V from encoder_output) and wrap with add-and-norm
     query, _, _ = project_to_query_key_value(y, w_q, None, w_k, None, w_v, None)
     _, key, value = project_to_query_key_value(encoder_output, w_q, None, w_k, None, w_v, None)
-    src_mask = src_mask[:, None, None, :]
     out = assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o, num_heads, src_mask)
     return apply_residual_add_and_norm(y, out, gamma, beta, eps=1e-5)
 

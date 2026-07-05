@@ -517,8 +517,31 @@ def init_encoder_layer_parameters(d_model, num_heads, d_ff):
         'ffn_beta': torch.zeros((d_model,), dtype=torch.float32, requires_grad=True),
     }
 
-# Step 53 - init_decoder_layer_parameters (not yet solved)
-# TODO: implement
+# Step 53 - init_decoder_layer_parameters
+import torch
+
+def init_decoder_layer_parameters(d_model, num_heads, d_ff):
+    # TODO: return a dict of requires_grad tensors for one decoder layer
+    return {
+        'w_q_self': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_k_self': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_v_self': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_o_self': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_q_cross': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_k_cross': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_v_cross': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w_o_cross': torch.rand((d_model, d_model), dtype=torch.float32, requires_grad=True),
+        'w1': torch.rand((d_model, d_ff), dtype=torch.float32, requires_grad=True),
+        'b1': torch.zeros((d_ff,), dtype=torch.float32, requires_grad=True),
+        'w2': torch.rand((d_ff, d_model), dtype=torch.float32, requires_grad=True),
+        'b2': torch.zeros((d_model,), dtype=torch.float32, requires_grad=True),
+        'self_gamma': torch.ones((d_model,), dtype=torch.float32, requires_grad=True),
+        'self_beta': torch.zeros((d_model,), dtype=torch.float32, requires_grad=True),
+        'cross_gamma': torch.ones((d_model,), dtype=torch.float32, requires_grad=True),
+        'cross_beta': torch.zeros((d_model,), dtype=torch.float32, requires_grad=True),
+        'ffn_gamma': torch.ones((d_model,), dtype=torch.float32, requires_grad=True),
+        'ffn_beta': torch.zeros((d_model,), dtype=torch.float32, requires_grad=True),
+    }
 
 # Step 54 - init_embedding_and_projection_parameters (not yet solved)
 # TODO: implement

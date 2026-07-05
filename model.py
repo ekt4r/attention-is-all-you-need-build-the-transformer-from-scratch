@@ -257,6 +257,8 @@ def assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o,
     # TODO: project Q/K/V, split into heads, run scaled dot-product attention, merge heads, output projection.
     # project_to_query_key_value(x, w_q, b_q, w_k, b_k, w_v, b_v)
     q_h, k_h, v_h = split_qkv_into_heads(query, key, value, num_heads)
+    if mask is not None and mask.ndim == 2:
+        mask = mask[:, None, None, :]
     context, attention_weights = multi_head_scaled_dot_product_attention(q_h, k_h, v_h, mask)
     return merge_heads_and_project_output(context, w_o, None)
 
@@ -368,8 +370,16 @@ def decoder_layer_masked_self_attention_sublayer(y, w_q, w_k, w_v, w_o, gamma, b
     out = assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o, num_heads, tgt_mask)
     return apply_residual_add_and_norm(y, out, gamma, beta, eps=1e-5)
 
-# Step 44 - decoder_layer_cross_attention_sublayer (not yet solved)
-# TODO: implement
+# Step 44 - decoder_layer_cross_attention_sublayer
+import torch
+
+def decoder_layer_cross_attention_sublayer(y, encoder_output, w_q, w_k, w_v, w_o, gamma, beta, num_heads, src_mask):
+    # TODO: run multi-head cross-attention (Q from y, K/V from encoder_output) and wrap with add-and-norm
+    query, _, _ = project_to_query_key_value(y, w_q, None, w_k, None, w_v, None)
+    _, key, value = project_to_query_key_value(encoder_output, w_q, None, w_k, None, w_v, None)
+    src_mask = src_mask[:, None, None, :]
+    out = assemble_multi_head_attention_forward(query, key, value, w_q, w_k, w_v, w_o, num_heads, src_mask)
+    return apply_residual_add_and_norm(y, out, gamma, beta, eps=1e-5)
 
 # Step 45 - decoder_layer_feed_forward_sublayer (not yet solved)
 # TODO: implement

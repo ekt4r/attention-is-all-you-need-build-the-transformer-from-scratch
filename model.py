@@ -468,11 +468,8 @@ def apply_log_softmax_over_vocab(logits):
 # Step 51 - run_transformer_forward
 def run_transformer_forward(src_ids, tgt_ids, model_params, num_heads, pad_id):
     # TODO: embed src+tgt, add PE, build masks, run encoder/decoder, project to log probs.
-    # src_emb = model_params['token_embedding'][src_ids]
-    # tgt_emb = model_params['token_embedding'][tgt_ids]
-
-    src_emb = model_params['src_embedding'][src_ids]
-    tgt_emb = model_params['tgt_embedding'][tgt_ids]
+    src_emb = model_params['token_embedding'][src_ids]
+    tgt_emb = model_params['token_embedding'][tgt_ids]
 
     _, _, d_model = src_emb.shape
     max_len = max(src_ids.shape[1], tgt_ids.shape[1])

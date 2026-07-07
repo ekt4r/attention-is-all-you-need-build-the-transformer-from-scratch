@@ -740,8 +740,28 @@ def compute_batch_training_loss(src_batch, tgt_batch, model_params, config):
     total_loss = compute_label_smoothed_kl_loss(log_probabilities, smoothed_distribution)
     return average_loss_over_non_pad_tokens(total_loss, gold_token_ids, config['pad_id'])
 
-# Step 72 - run_training_step_with_backprop (not yet solved)
-# TODO: implement
+# Step 72 - run_training_step_with_backprop
+import torch
+
+def run_training_step_with_backprop(src_batch, tgt_batch, parameter_list, model_params, optimizer_state, step_number, config):
+    """Run one training iteration: zero grads, forward, backward, Noam LR, Adam step.
+
+    Returns the scalar loss value for the step as a Python float.
+    """
+    # TODO: zero grads, compute loss, backward, look up Noam LR, apply Adam step
+    zero_all_parameter_gradients(parameter_list)
+    loss = compute_batch_training_loss(src_batch, tgt_batch, model_params, config)
+    learning_rate = compute_noam_learning_rate(step_number, config['d_model'], config['warmup_steps'])
+    beta1, beta2, epsilon = 0.9, 0.98, 1e-9
+    if 'beta1' in config:
+        beta1 = config['beta1']
+    if 'beta2' in config:
+        beta2 = config['beta2']
+    if 'epsilon' in config:
+        epsilon = 1e-9
+    loss.backward()
+    optimizer_state = apply_adam_step_to_all_parameters(parameter_list, optimizer_state, learning_rate, beta1, beta2, epsilon)
+    return loss.item()
 
 # Step 73 - run_training_loop_for_steps (not yet solved)
 # TODO: implement

@@ -732,8 +732,6 @@ def zero_all_parameter_gradients(parameter_list):
 def compute_batch_training_loss(src_batch, tgt_batch, model_params, config):
     # TODO: shift targets right, run the forward pass, build smoothed targets, and average the KL loss over non-pad tokens.
     gold_token_ids = tgt_batch
-    forward_params = dict(model_params)
-    forward_params["token_embedding"] = model_params["src_embedding"]
     tgt_batch = shift_targets_right_with_start_token(gold_token_ids, config['start_id'])
     log_probabilities = run_transformer_forward(src_batch, tgt_batch, model_params, config['num_heads'], config['pad_id'])
     smoothed_distribution = build_uniform_smoothing_distribution(log_probabilities.shape, config['vocab_size'], config['smoothing'])
